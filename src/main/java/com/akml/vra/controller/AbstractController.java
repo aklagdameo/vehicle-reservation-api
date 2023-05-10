@@ -1,28 +1,48 @@
 package com.akml.vra.controller;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 
-abstract class AbstractController<Entity> {
+abstract class AbstractController<Entity, EntityRepository> {
 
-    @GetMapping("{id}")
-    @ResponseStatus(HttpStatus.OK)
-    abstract Entity getEntityById(Long id);
+    @Autowired
+    public JpaRepository<Entity, Long> entityRepository;
 
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
-    abstract List<Entity> getAll();
+    List<Entity> getAll() {
+        return entityRepository.findAll();
+    }
+
+    @GetMapping("{id}")
+    @ResponseStatus(HttpStatus.OK)
+    Optional<Entity> getEntityById(@PathVariable("id") Long id) {
+        return entityRepository.findById(id);
+    }
 
     @PostMapping
-    abstract void create(Entity entity);
+    @ResponseStatus(HttpStatus.CREATED)
+    void create(@RequestBody Entity entity) {
+        entityRepository.save(entity);
+    }
 
     @PutMapping("{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    abstract void update(Long id, Entity entity);
+    void update(@PathVariable("id") Long id, @RequestBody Entity entity) {
+        if (!entityRepository.existsById(id)) {
+            // throw something here...
+        }
+        entityRepository.save(entity);
+    }
 
     @DeleteMapping("{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    abstract void delete(Long id);
+    void delete(@PathVariable("id") Long id) {
+        entityRepository.findById(id).ifPresent(entity -> entityRepository.delete(entity));
+    }
 }
