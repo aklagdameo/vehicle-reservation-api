@@ -1,13 +1,13 @@
 package com.akml.vra.model;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToOne;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+
 import java.util.Date;
 
 @Entity
@@ -26,9 +26,9 @@ public class Reservation {
     @OneToOne
     private Driver driver;
 
-    private Date departureTime;
+    private Date startDate;
 
-    private Date arrivalTime;
+    private Date endDate;
 
     private String passengers;
 }
