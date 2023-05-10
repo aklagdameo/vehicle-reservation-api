@@ -12,22 +12,4 @@ public class VehicleService {
 
     @Autowired
     private VehicleRepository vehicleRepository;
-
-    public List<Vehicle> getAll() {
-        return vehicleRepository.findAll();
-    }
-
-    public void create(Vehicle vehicle) {
-        vehicleRepository.save(vehicle);
-    }
-
-    public Vehicle getVehicleById(Long id) {
-        return vehicleRepository.findById(id)
-                .orElse(null);
-    }
-
-    public void delete(Long id) {
-        vehicleRepository.findById(id)
-                .ifPresent(driver -> vehicleRepository.delete(driver));
-    }
 }
