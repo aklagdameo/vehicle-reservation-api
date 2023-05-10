@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 import java.util.Optional;
@@ -35,7 +36,7 @@ abstract class AbstractController<Entity, EntityRepository> {
     @ResponseStatus(HttpStatus.NO_CONTENT)
     void update(@PathVariable("id") Long id, @RequestBody Entity entity) {
         if (!entityRepository.existsById(id)) {
-            // throw something here...
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Entity does not exist.");
         }
         entityRepository.save(entity);
     }
@@ -43,6 +44,9 @@ abstract class AbstractController<Entity, EntityRepository> {
     @DeleteMapping("{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     void delete(@PathVariable("id") Long id) {
-        entityRepository.findById(id).ifPresent(entity -> entityRepository.delete(entity));
+        if (!entityRepository.existsById(id)) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Entity does not exist.");
+        }
+        entityRepository.deleteById(id);
     }
 }
